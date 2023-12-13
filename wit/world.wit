@@ -20,6 +20,6 @@ interface api {
   span-exit: func();
 }
 
-default world observe {
+world observe {
     import api;
 }
