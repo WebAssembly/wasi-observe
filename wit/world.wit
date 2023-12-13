@@ -1,12 +1,25 @@
-// If the repository defines `interface`s, this file can define a minimal world
-// which contains those interfaces, to allow documentation to be generated for
-// them.
-//
-// Proposals should remove these `//` commments, and edit the `world` name and
-// imports below to pull in their own `interface`s.
+package wasi:observe;
 
-package wasi:example-package
+interface api {
+  enum log-level {
+    error,
+    warn,
+    info,
+    debug,
+    trace
+  }
 
-world imports {
-    import example-interface
+  enum metric-format {
+    statsd,
+  }
+
+  metric: func(format: metric-format, name: list<u8>);
+  log: func(level: log-level, msg: list<u8>);
+  span-enter: func(name: string);
+  span-tags: func(tags: string);
+  span-exit: func();
+}
+
+default world observe {
+    import api;
 }
