@@ -1,25 +1,6 @@
 package wasi:observe;
 
-interface api {
-  enum log-level {
-    error,
-    warn,
-    info,
-    debug,
-    trace
-  }
-
-  enum metric-format {
-    statsd,
-  }
-
-  metric: func(format: metric-format, name: list<u8>);
-  log: func(level: log-level, msg: list<u8>);
-  span-enter: func(name: string);
-  span-tags: func(tags: string);
-  span-exit: func();
-}
-
-world observe {
-    import api;
+world imports {
+    import wasi:logging/logging;
+    import observe;
 }

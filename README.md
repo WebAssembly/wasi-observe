@@ -10,11 +10,9 @@ wasi-observe is currently in [Phase 1].
 
 ### Champions
 
-<!---
-Please limit to one champion per company or organization
--->
-- TKTK: Ben or Chris
-- [Champion 2]
+- Chris Dickinson ([Dylibso][dylibso])
+
+[dylibso]: https://dylibso.com/
 
 ### Portability Criteria
 
@@ -39,59 +37,99 @@ TODO before entering Phase 2.
 
 ### Introduction
 
-[The "executive summary" or "abstract". Explain in a few sentences what the goals of the project are, and a brief overview of how the solution works. This should be no more than 1-2 paragraphs.]
+WASI Observe exposes observability ("o11y") tracing, logging, and metrics
+interfaces to Wasm components. The primary motivation of the interface is to
+allow for manual and automatic instrumentation of components that consume the
+interface (**"guests"**), while allowing components instances that implement
+the interface (**"hosts"**) sufficient context to ship the produced data to an
+o11y **vendor** (DataDog, Honeycomb.) The protocol used by the host to
+communicate with the vendor is an implementation detail of the providing
+component.
 
-### Goals [or Motivating Use Cases, or Scenarios]
+> TKTK: "vendor" might be the wrong word there, should that be "collector"?
 
-[What is the end-user need which this project aims to address?]
+#### An aside about the origin of the proposal
+
+Dylibso extracted the interface proposal [from an effort][dylibso-pr] to port
+Dylibso's Observe-SDK bindings, which target Wasm Core Modules, to the Wasm
+Component Model; the initial proposal reflects those origins. In particular:
+
+- The host is expected to track and maintain span state for guests.
+- The interface is isomorphic across components and core modules. A runtime
+  implementing the host interface only needs to implement the interface once.
+
+These properties are not set in stone!
+
+[dylibso-pr]: https://github.com/dylibso/observe-sdk/pull/128
+
+### Goals
+
+#### Technical Values
+
+- WASI Observe is a pipe. The interesting O11Y work happens at either end of
+  this pipe: at guest instrumentation or host collection.
+- Using WASI Observe should be as transparent as possible for authors of guest
+  applications.
+- TKTK(proposed value)?: Target the OTel specification as the "base layer" of functionality.
+
+---
+
+#### A Programmer is Required to Implement O11Y Instrumentation
+
+A programmer working at a company goes to implement a new service. The Site
+Reliability Engineering function of the engineering department requires that
+new services be instrumented using standard tooling. The programmer installs an
+instrumentation package using the appropriate package manager (`npm`, `cargo`,
+`curl -o`), configures the package according to the documentation, and pushes
+the code.
+
+The instrumentation Just Works (TM.) In this scenario, it is not necessary for
+the programmer to be aware that their service is compiled to a Wasm component,
+or to make any adjustments to accommodate the compile target.
+
+#### An O11Y Vendor Evaluates Supporting Wasm Components
+
+A hypothetical O11Y Vendor, Omni Consumer Products ("OCP"), evaluates
+supporting Wasm Components as a target. OCP maintains instrumentation libraries
+across several language platforms: JavaScript, Ruby, Golang, Rust, Python, and
+others; collocated collector services meant to be run by their customers;
+short- and long-term data storage; and visualization dashboards.
+
+OCP takes particular care to ensure that on-site collector services and
+instrumentation libraries introduce as little resource overhead as possible,
+both in terms of CPU time and memory use.
+
+In order to support Wasm Components across their language platform offerings,
+OCP are able to introduce low-cost checks for the availability of WASI Observe
+functions at initialization time. Where the Observe functions are available
+they can be used to intercept incoming domain objects (spans, logs, metrics)
+with minimal modification to the incoming data.
+
+Looking forward, OCP is considering compiling their on-site collector service
+to a Wasm component to more directly intercept and export o11y data off-site
+using fewer resources with a better security profile.
+
+Buoyed by the success of this approach, OCP is considering automatic
+instrumentation of components at component instantiation points.
+
+#### A Site-Reliability Engineer Considers Supporting Wasm Components
+
+A Site Reliability Engineering engineer ("SRE") working at a large software as
+a service company evaluates whether supporting Wasm components is feasible at
+this time. The SRE is responsible for the operation and maintenance of several
+production services. Before adopting a new platform target, the SRE considers
+the telemetry that platform makes available.
+
+Having considered the telemetry available through the WASI observe tooling, the
+SRE determines that the Wasm component model is an acceptable platform target.
 
 ### Non-goals
 
-[If there are "adjacent" goals which may appear to be in scope but aren't, enumerate them here. This section may be fleshed out as your design progresses and you encounter necessary technical and other trade-offs.]
+- TKTK
 
 ### API walk-through
 
-The full API documentation can be found [here](wasi-proposal-template.md).
-
-[Walk through of how someone would use this API.]
-
-#### [Use case 1]
-
-[Provide example code snippets and diagrams explaining how the API would be used to solve the given problem]
-
-#### [Use case 2]
-
-[etc.]
-
-### Detailed design discussion
-
-[This section should mostly refer to the .wit.md file that specifies the API. This section is for any discussion of the choices made in the API which don't make sense to document in the spec file itself.]
-
-#### [Tricky design choice #1]
-
-[Talk through the tradeoffs in coming to the specific design point you want to make.]
-
-```
-// Illustrated with example code.
-```
-
-[This may be an open question, in which case you should link to any active discussion threads.]
-
-#### [Tricky design choice 2]
-
-[etc.]
-
-### Considered alternatives
-
-[This section is not required if you already covered considered alternatives in the design discussion above.]
-
-#### [Alternative 1]
-
-[Describe an alternative which was considered, and why you decided against it.]
-
-#### [Alternative 2]
-
-[etc.]
+The full API documentation can be found [here](imports.md).
 
 ### Stakeholder Interest & Feedback
 
