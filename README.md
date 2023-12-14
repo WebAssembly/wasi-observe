@@ -4,7 +4,7 @@ A proposed [WebAssembly System Interface](https://github.com/WebAssembly/WASI) A
 
 ### Current Phase
 
-wasi-observe is currently in [Phase 1].
+WASI Observe is currently in [Phase 1].
 
 [Phase 1]: https://github.com/WebAssembly/WASI/blob/42fe2a3ca159011b23099c3d10b5b1d9aff2140e/docs/Proposals.md#phase-1---feature-proposal-cg
 
@@ -21,17 +21,15 @@ TODO before entering Phase 2.
 ## Table of Contents [if the explainer is longer than one printed page]
 
 - [Introduction](#introduction)
-- [Goals [or Motivating Use Cases, or Scenarios]](#goals-or-motivating-use-cases-or-scenarios)
+    - [An aside](#an-aside-about-the-origin-of-the-proposal)
+- [Goals](#goals)
+    - [Technical Values](#technical-values)
+    - [User Stories](#user-stories)
+        - [A Programmer is Required to Implement O11Y Instrumentation](#a-programmer-is-required-to-implement-o11y-instrumentation)
+        - [An O11Y Vendor Evaluates Supporting Wasm Components](#an-o11y-vendor-evaluates-supporting-wasm-components)
+        - [A Site Reliability Engineer Considers Supporting Wasm Components](#a-site-reliability-engineer-considers-supporting-wasm-components)
 - [Non-goals](#non-goals)
 - [API walk-through](#api-walk-through)
-  - [Use case 1](#use-case-1)
-  - [Use case 2](#use-case-2)
-- [Detailed design discussion](#detailed-design-discussion)
-  - [[Tricky design choice 1]](#tricky-design-choice-1)
-  - [[Tricky design choice 2]](#tricky-design-choice-2)
-- [Considered alternatives](#considered-alternatives)
-  - [[Alternative 1]](#alternative-1)
-  - [[Alternative 2]](#alternative-2)
 - [Stakeholder Interest & Feedback](#stakeholder-interest--feedback)
 - [References & acknowledgements](#references--acknowledgements)
 
@@ -74,7 +72,9 @@ These properties are not set in stone!
 
 ---
 
-#### A Programmer is Required to Implement O11Y Instrumentation
+#### User Stories
+
+##### A Programmer is Required to Implement O11Y Instrumentation
 
 A programmer working at a company goes to implement a new service. The Site
 Reliability Engineering function of the engineering department requires that
@@ -87,7 +87,7 @@ The instrumentation Just Works (TM.) In this scenario, it is not necessary for
 the programmer to be aware that their service is compiled to a Wasm component,
 or to make any adjustments to accommodate the compile target.
 
-#### An O11Y Vendor Evaluates Supporting Wasm Components
+##### An O11Y Vendor Evaluates Supporting Wasm Components
 
 A hypothetical O11Y Vendor, Omni Consumer Products ("OCP"), evaluates
 supporting Wasm Components as a target. OCP maintains instrumentation libraries
@@ -112,7 +112,7 @@ using fewer resources with a better security profile.
 Buoyed by the success of this approach, OCP is considering automatic
 instrumentation of components at component instantiation points.
 
-#### A Site-Reliability Engineer Considers Supporting Wasm Components
+##### A Site Reliability Engineer Considers Supporting Wasm Components
 
 A Site Reliability Engineering engineer ("SRE") working at a large software as
 a service company evaluates whether supporting Wasm components is feasible at
