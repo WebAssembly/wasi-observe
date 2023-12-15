@@ -44,8 +44,6 @@ o11y **vendor** (DataDog, Honeycomb.) The protocol used by the host to
 communicate with the vendor is an implementation detail of the providing
 component.
 
-> TKTK: "vendor" might be the wrong word there, should that be "collector"?
-
 #### An aside about the origin of the proposal
 
 Dylibso extracted the interface proposal [from an effort][dylibso-pr] to port
@@ -56,7 +54,9 @@ Component Model; the initial proposal reflects those origins. In particular:
 - The interface is isomorphic across components and core modules. A runtime
   implementing the host interface only needs to implement the interface once.
 
-These properties are not set in stone!
+These properties are not set in stone! This proposal is a work in progress and
+we're looking for interested parties to help us set technical values and direction
+starting in Jan.
 
 [dylibso-pr]: https://github.com/dylibso/observe-sdk/pull/128
 
