@@ -18,7 +18,7 @@ WASI Observe is currently in [Phase 1].
 
 TODO before entering Phase 2.
 
-## Table of Contents [if the explainer is longer than one printed page]
+## Table of Contents
 
 - [Introduction](#introduction)
     - [An aside](#an-aside-about-the-origin-of-the-proposal)
