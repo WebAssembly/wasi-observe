@@ -123,6 +123,13 @@ the telemetry that platform makes available.
 Having considered the telemetry available through the WASI observe tooling, the
 SRE determines that the Wasm component model is an acceptable platform target.
 
+##### A Programmer Wants Automatic Instrumentation Of Their Component
+
+A programmer is having trouble tracking down a problem in their component related
+to imports and exports during development. Without bringing in specific libraries
+to set up spans and trace contexts, they wish to export a trace of each invoked
+export and import during the lifetime of that component.
+
 ### Non-goals
 
 - TKTK
