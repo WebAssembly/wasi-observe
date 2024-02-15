@@ -5,7 +5,7 @@ code. Changes to the spec should be reflected in the demos. We should have a
 demo that proves we support each user story listed in the
 [README](./README.md#user-stories).
 
-## Demo 1
+## Demo 0
 
 A component (implemented in any language) uses high-level span functions to
 send basic telemetry information to a host (implemented in any language.) The
