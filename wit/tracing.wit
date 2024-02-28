@@ -1,0 +1,47 @@
+// tracing is a wit interface that allows for an application to produce traces
+// from within the guest. The interface supports being a tracing-provider (providing
+// span resources to the guest from the host), or being a tracing-sink (recieving whole-spans
+// from the guest)
+interface tracing {
+  // Common
+
+  record read-only-span {
+    // TODO: Read only list of fields similar to resource:span.
+  }
+
+  resource span {
+    /// get-name returns the name of the span.
+    get-name: func() -> string;
+
+    /// get-id returns the ID of the span.
+    get-id: func() -> string;
+
+    /// set-attribute sets an attribute on the span.
+    set-attribute: func(key: string, value: string);
+
+    /// Attach an event to the given span
+    submit-event: func(name: string, message: string)
+
+    /// Enter a new child span of the callee
+    span-enter: func(name: string) -> span;
+
+    /// Close the span and communicate that to the o11y host
+    close: func()
+  }
+
+  // Provider
+
+  /// Enter a named top-level span.
+  ///
+  /// Communicate to the o11y host that the guest is moving into a new span.
+  span-enter: func(name: string) -> span;
+
+  // Sink
+
+  /// Retrieve any parent Span ID from the Host runtime that should be the parent
+  /// of the Guest Root Span.
+  get-parent-span-id: func() -> string;
+
+  /// Emit a given completed read-only-span to the o11y host.
+  span-emit: func(span: read-only-span);
+}
