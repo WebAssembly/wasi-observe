@@ -3,4 +3,5 @@ package wasi:observe;
 world imports {
     import wasi:logging/logging;
     import observe;
+    import tracing;
 }
