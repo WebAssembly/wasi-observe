@@ -13,9 +13,9 @@ WASI Observe is currently in [Phase 1].
 Meetings are **fortnightly** (held every other week, starting on `2024-W05`
 (`2024 Jan 31`) on **Wednesdays at UTC 16:00**.
 
-Contact [**@chrisdickinson**](https://github.com/chrisdickinson) via `chris at
-dylibso dot com` to request an invite. Participants must be W3C [WebAssembly CG
-members](https://www.w3.org/community/webassembly/).
+Contact [**@calebschoepp**](https://github.com/calebschoepp) via `caleb.schoepp
+at fermyon dot com` to request an invite. Participants must be W3C [WebAssembly
+CG members](https://www.w3.org/community/webassembly/).
 
 ### Roadmap
 
@@ -23,8 +23,9 @@ members](https://www.w3.org/community/webassembly/).
 
 ### Champions
 
-- Chris Dickinson ([Dylibso][dylibso])
+- Caleb Schoepp ([Fermyon][fermyon])
 
+[fermyon]: https://www.fermyon.com/
 [dylibso]: https://dylibso.com/
 
 ### Portability Criteria
