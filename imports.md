@@ -4,7 +4,7 @@
 <ul>
 <li>interface <a href="#wasi_logging_logging"><code>wasi:logging/logging</code></a></li>
 <li>interface <a href="#wasi_clocks_wall_clock_0_2_1"><code>wasi:clocks/wall-clock@0.2.1</code></a></li>
-<li>interface <a href="#wasi_observe_traces"><code>wasi:observe/traces</code></a></li>
+<li>interface <a href="#wasi_observe_tracer"><code>wasi:observe/tracer</code></a></li>
 </ul>
 </li>
 </ul>
@@ -100,7 +100,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <ul>
 <li><a id="resolution.0"></a> <a href="#datetime"><a href="#datetime"><code>datetime</code></a></a></li>
 </ul>
-<h2><a id="wasi_observe_traces"></a>Import interface wasi:observe/traces</h2>
+<h2><a id="wasi_observe_tracer"></a>Import interface wasi:observe/tracer</h2>
 <hr />
 <h3>Types</h3>
 <h4><a id="datetime"></a><code>type datetime</code></h4>
@@ -203,16 +203,14 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <p>The attribute value.
 </li>
 </ul>
-<h4><a id="trace_id"></a><code>tuple trace-id</code></h4>
-<p>The trace that this <a href="#span_context"><code>span-context</code></a> belongs to.</p>
-<h5>Tuple Fields</h5>
-<ul>
-<li><a id="trace_id.0"></a><code>0</code>: <code>u64</code></li>
-<li><a id="trace_id.1"></a><code>1</code>: <code>u64</code></li>
-</ul>
+<h4><a id="trace_id"></a><code>type trace-id</code></h4>
+<p><code>string</code></p>
+<p>The trace that this `span-context` belongs to.
+<p>16 bytes encoded as a hexadecimal string.</p>
 <h4><a id="span_id"></a><code>type span-id</code></h4>
-<p><code>u64</code></p>
+<p><code>string</code></p>
 <p>The id of this `span-context`.
+<p>8 bytes encoded as a hexadecimal string.</p>
 <h4><a id="trace_flags"></a><code>flags trace-flags</code></h4>
 <p>Flags that can be set on a <a href="#span_context"><code>span-context</code></a>.</p>
 <h5>Flags members</h5>
@@ -220,6 +218,10 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <li><a id="trace_flags.sampled"></a><code>sampled</code>: <p>Whether the `span` should be sampled or not.
 </li>
 </ul>
+<h4><a id="trace_state"></a><code>type trace-state</code></h4>
+<p><a href="#trace_state"><a href="#trace_state"><code>trace-state</code></a></a></p>
+<p>Carries system-specific configuration data, represented as a list of key-value pairs. `trace-state` allows multiple tracing systems to participate in the same trace.
+<p>If any invalid keys or values are provided then the <a href="#trace_state"><code>trace-state</code></a> will be treated as an empty list.</p>
 <h4><a id="span_context"></a><code>record span-context</code></h4>
 <p>Identifying trace information about a span that can be serialized and propagated.</p>
 <h5>Record Fields</h5>
@@ -241,7 +243,7 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <p>Whether this `span-context` was propagated from a remote parent.
 </li>
 <li>
-<p><a id="span_context.trace_state"></a><a href="#trace_state"><code>trace-state</code></a>: <code>string</code></p>
+<p><a id="span_context.trace_state"></a><a href="#trace_state"><code>trace-state</code></a>: <a href="#trace_state"><a href="#trace_state"><code>trace-state</code></a></a></p>
 <p>The `trace-state` for this `span-context`.
 </li>
 </ul>
@@ -263,6 +265,10 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <h5>Record Fields</h5>
 <ul>
 <li>
+<p><a id="start_options.new_root"></a><code>new-root</code>: <code>bool</code></p>
+<p>Whether this span should act as the root of a new trace.
+</li>
+<li>
 <p><a id="start_options.span_kind"></a><a href="#span_kind"><code>span-kind</code></a>: option&lt;<a href="#span_kind"><a href="#span_kind"><code>span-kind</code></a></a>&gt;</p>
 <p>`span-kind` for the new `span`.
 </li>
@@ -279,38 +285,18 @@ also known as <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Time</a>.</
 <p>When the `span` should begin. If this is not provided it defaults to the current time.
 </li>
 </ul>
-<h4><a id="span_parent"></a><code>variant span-parent</code></h4>
-<p>Determines how the parent of a <a href="#span"><code>span</code></a> should be set.</p>
-<h5>Variant Cases</h5>
-<ul>
-<li>
-<p><a id="span_parent.implicit"></a><code>implicit</code></p>
-<p>The `span`'s parent is the current active span. The current active span is the most recently created and non-closed span. If no spans have been started in the guest this may be a span in the host.
-</li>
-<li>
-<p><a id="span_parent.is_root"></a><code>is-root</code></p>
-<p>The `span` is a root span and should have no parent.
-</li>
-<li>
-<p><a id="span_parent.span_context"></a><a href="#span_context"><code>span-context</code></a>: <a href="#span_context"><a href="#span_context"><code>span-context</code></a></a></p>
-<p>The `span`'s parent is identified by the given `span-context`.
-</li>
-</ul>
-<h4><a id="trace_state"></a><code>type trace-state</code></h4>
-<h2>option&lt;list&lt;(<code>string</code>, <code>string</code>)&gt;&gt;
-Carries system-specific configuration data, represented as a list of key-value pairs. <a href="#trace_state"><code>trace-state</code></a> allows multiple tracing systems to participate in the same trace.</h2>
+<hr />
 <h3>Functions</h3>
-<h4><a id="static_span_start"></a><code>[static]span.start: func</code></h4>
-<p>Starts a new span with the given name, parent, and options.</p>
+<h4><a id="start"></a><code>start: func</code></h4>
+<p>Starts a new <a href="#span"><code>span</code></a> with the given name and options.</p>
 <h5>Params</h5>
 <ul>
-<li><a id="static_span_start.name"></a><code>name</code>: <code>string</code></li>
-<li><a id="static_span_start.parent"></a><code>parent</code>: <a href="#span_parent"><a href="#span_parent"><code>span-parent</code></a></a></li>
-<li><a id="static_span_start.options"></a><code>options</code>: option&lt;<a href="#start_options"><a href="#start_options"><code>start-options</code></a></a>&gt;</li>
+<li><a id="start.name"></a><code>name</code>: <code>string</code></li>
+<li><a id="start.options"></a><code>options</code>: option&lt;<a href="#start_options"><a href="#start_options"><code>start-options</code></a></a>&gt;</li>
 </ul>
 <h5>Return values</h5>
 <ul>
-<li><a id="static_span_start.0"></a> own&lt;<a href="#span"><a href="#span"><code>span</code></a></a>&gt;</li>
+<li><a id="start.0"></a> own&lt;<a href="#span"><a href="#span"><code>span</code></a></a>&gt;</li>
 </ul>
 <h4><a id="method_span_span_context"></a><code>[method]span.span-context: func</code></h4>
 <p>Get the <a href="#span_context"><code>span-context</code></a> for this <a href="#span"><code>span</code></a>.</p>
@@ -373,7 +359,7 @@ Carries system-specific configuration data, represented as a list of key-value p
 </ul>
 <h4><a id="method_span_end"></a><code>[method]span.end: func</code></h4>
 <p>Signals that the operation described by this span has now ended.</p>
-<p>If a timestamp is not provided then it is treated equivalent to passing the current time.</p>
+<p>If a timestamp is not provided then it is treated equivalent to passing the current time. Dropping this resource is the equivalent of calling <code>end(none)</code>.</p>
 <h5>Params</h5>
 <ul>
 <li><a id="method_span_end.self"></a><code>self</code>: borrow&lt;<a href="#span"><a href="#span"><code>span</code></a></a>&gt;</li>

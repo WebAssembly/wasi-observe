@@ -1,11 +1,11 @@
-interface traces {
+interface tracer {
     use wasi:clocks/wall-clock@0.2.1.{datetime};
+
+    /// Starts a new `span` with the given name and options.
+    start: func(name: string, options: option<start-options>) -> span;
 
     /// Represents a unit of work or operation.
     resource span {
-        /// Starts a new span with the given name, parent, and options.
-        start: static func(name: string, parent: span-parent, options: option<start-options>) -> span;
-
         /// Get the `span-context` for this `span`.
         span-context: func() -> span-context;
 
@@ -33,12 +33,14 @@ interface traces {
 
         /// Signals that the operation described by this span has now ended.
         ///
-        /// If a timestamp is not provided then it is treated equivalent to passing the current time.
+        /// If a timestamp is not provided then it is treated equivalent to passing the current time. Dropping this resource is the equivalent of calling `end(none)`.
         end: func(timestamp: option<datetime>);
     }
 
     /// Configuration for starting a `span`.
     record start-options {
+        /// Whether this span should act as the root of a new trace.
+        new-root: bool,
         /// `span-kind` for the new `span`.
         span-kind: option<span-kind>,
         /// Attributes for the new `span`.
@@ -79,16 +81,6 @@ interface traces {
         ok,
         /// The operation contains an error with a description.
         error(string),
-    }
-
-    /// Determines how the parent of a `span` should be set.
-    variant span-parent {
-        /// The `span`'s parent is the current active span. The current active span is the most recently created and non-closed span. If no spans have been started in the guest this may be a span in the host.
-        implicit,
-        /// The `span` is a root span and should have no parent.
-        is-root,
-        /// The `span`'s parent is identified by the given `span-context`.
-        span-context(span-context),
     }
 
     /// A key-value pair describing an attribute.
@@ -133,14 +125,18 @@ interface traces {
         /// Whether this `span-context` was propagated from a remote parent.
         is-remote: bool,
         /// The `trace-state` for this `span-context`.
-        trace-state: string,
+        trace-state: trace-state,
     }
 
     /// The trace that this `span-context` belongs to.
-    type trace-id = tuple<u64, u64>;
+    ///
+    /// 16 bytes encoded as a hexadecimal string.
+    type trace-id = string;
 
     /// The id of this `span-context`.
-    type span-id = u64;
+    ///
+    /// 8 bytes encoded as a hexadecimal string.
+    type span-id = string;
 
     /// Flags that can be set on a `span-context`.
     flags trace-flags {
@@ -149,5 +145,7 @@ interface traces {
     }
 
     /// Carries system-specific configuration data, represented as a list of key-value pairs. `trace-state` allows multiple tracing systems to participate in the same trace.
-    type trace-state = option<list<tuple<string, string>>>;
+    ///
+    /// If any invalid keys or values are provided then the `trace-state` will be treated as an empty list.
+    type trace-state = list<tuple<string, string>>;
 }
