@@ -1,4 +1,4 @@
-## Agenda: {month} {day} WASI Observe Video call
+# Agenda: {month} {day} WASI Observe Video call
 
 - **Where**: zoom.us
 - **When**: {month} {day} {year}, {start_time}-{end_time} UTC
@@ -6,22 +6,26 @@
   - Name: {CONTACT_NAME}
   - Email: {CONTACT_EMAIL}
 
-## Logistics
+# Logistics
 
 The meeting will be on a zoom.us video conference.
 
-## Agenda items
+# Agenda items
 
 1. *Add in agenda items here*
 
-## Minutes
+# Minutes
 
-### Attendees
+## Attendees
 
 - [**@{identifier}**][github-identifier], {company}
 
-### Action items
+## Action items
 
 - [**@{identifier}**][github-identifier], {task that should be accomplished}
+
+## Notes
+
+- Add notes here
 
 [github-identifier]: https://github.com/user
