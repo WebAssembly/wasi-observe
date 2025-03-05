@@ -13,7 +13,7 @@ _prepare:
   fi
 
   if ! &>/dev/null which wit-bindgen; then
-    cargo install wit-bindgen-cli@0.16.0
+    cargo install wit-bindgen-cli@0.30.0
   fi
 
 build:

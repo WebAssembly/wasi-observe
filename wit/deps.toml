@@ -1,1 +1,2 @@
 logging = "https://github.com/WebAssembly/wasi-logging/archive/main.tar.gz"
+clocks = "https://github.com/WebAssembly/wasi-clocks/archive/main.tar.gz"
